@@ -41,7 +41,8 @@
                 "settings": [
                     {
                         "key": "sAppId",
-                        "label": "App ID"
+                        "label": "App ID",
+                        "info": "A paid account is required for currency conversions to work correctly"
                     }
                 ]
             }
