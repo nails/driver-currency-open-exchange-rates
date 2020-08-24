@@ -33,6 +33,7 @@
         {
             "name": "Open Exchange Rates",
             "type": "driver",
+            "subType": "currency",
             "forModule": "nails/module-currency",
             "data": {
                 "namespace": "Nails\\Currency\\Driver\\",
