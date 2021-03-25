@@ -1,11 +1,17 @@
 {
     "name": "nails/driver-currency-open-exchange-rates",
-    "keywords": ["Nails", "Shed Collective", "CodeIgniter", "Currency Module", "Driver", "Open Exchange Rates"],
+    "keywords": [
+        "Nails",
+        "Shed Collective",
+        "CodeIgniter",
+        "Currency Module",
+        "Driver",
+        "Open Exchange Rates"
+    ],
     "homepage": "http://nailsapp.co.uk/modules/currency/driver/open-exchange-rates",
     "description": "This is the \"Open Exchange Rates\" driver for the Nails Currency module.",
     "license": "MIT",
-    "authors":
-    [
+    "authors": [
         {
             "name": "Pablo de la Pena",
             "email": "p@nailsapp.co.uk",
@@ -13,43 +19,33 @@
             "role": "Developer"
         }
     ],
-    "support":
-    {
+    "support": {
         "email": "hello@nailsapp.co.uk"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require":
-    {
+    "require": {
         "nails/module-currency": "dev-develop"
     },
-    "require-dev":
-    {
+    "require-dev": {
         "phpunit/phpunit": "7.*"
     },
-    "extra":
-    {
-        "nails" :
-        {
+    "extra": {
+        "nails": {
             "name": "Open Exchange Rates",
             "type": "driver",
             "subType": "currency",
             "forModule": "nails/module-currency",
+            "namespace": "Nails\\Currency\\Driver\\",
             "data": {
                 "namespace": "Nails\\Currency\\Driver\\",
-                "class": "OpenExchangeRates",
-                "settings": [
-                    {
-                        "key": "sAppId",
-                        "label": "App ID",
-                        "info": "A paid account is required for currency conversions to work correctly"
-                    }
-                ]
+                "class": "OpenExchangeRates"
             }
         }
     },
-    "autoload":
-    {
-        "psr-4": {"Nails\\Currency\\Driver\\": "src/"}
+    "autoload": {
+        "psr-4": {
+            "Nails\\Currency\\Driver\\": "src/"
+        }
     }
 }
