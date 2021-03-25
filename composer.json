@@ -30,22 +30,23 @@
     "require-dev": {
         "phpunit/phpunit": "7.*"
     },
+        "autoload": {
+        "psr-4": {
+            "Nails\\Currency\\Driver\\": "src/",
+            "Nails\\Currency\\Driver\\OpenExchangeRates\\": "src/OpenExchangeRates/"
+        }
+    },
     "extra": {
         "nails": {
             "name": "Open Exchange Rates",
             "type": "driver",
             "subType": "currency",
             "forModule": "nails/module-currency",
-            "namespace": "Nails\\Currency\\Driver\\",
+            "namespace": "Nails\\Currency\\Driver\\OpenExchangeRates\\",
             "data": {
                 "namespace": "Nails\\Currency\\Driver\\",
                 "class": "OpenExchangeRates"
             }
-        }
-    },
-    "autoload": {
-        "psr-4": {
-            "Nails\\Currency\\Driver\\": "src/"
         }
     }
 }

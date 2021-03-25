@@ -1,6 +1,6 @@
 <?php
 
-namespace Nails\Currency\Driver\Settings;
+namespace Nails\Currency\Driver\OpenExchangeRates\Settings;
 
 use Nails\Common\Helper\Form;
 use Nails\Common\Interfaces;
@@ -11,7 +11,7 @@ use Nails\Factory;
 /**
  * Class OpenExchangeRates
  *
- * @package Nails\Currency\Driver\Settings
+ * @package Nails\Currency\Driver\OpenExchangeRates\Settings
  */
 class OpenExchangeRates implements Interfaces\Component\Settings
 {
