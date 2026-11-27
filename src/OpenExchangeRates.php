@@ -1,61 +1,87 @@
 <?php
 
-namespace Nails\Currency\Driver\Settings;
+namespace Nails\Currency\Driver;
 
-use Nails\Common\Helper\Form;
-use Nails\Common\Interfaces;
-use Nails\Common\Service\FormValidation;
-use Nails\Components\Setting;
+use Nails\Common\Driver\Base;
+use Nails\Common\Factory\HttpRequest;
+use Nails\Common\Service\HttpCodes;
+use Nails\Currency\Exception\ExchangeException\DriverApiException;
+use Nails\Currency\Exception\ExchangeException\DriverNotConfiguredException;
+use Nails\Currency\Interfaces\Driver;
+use Nails\Currency\Resource\Currency;
 use Nails\Factory;
 
-/**
- * Class OpenExchangeRates
- *
- * @package Nails\Currency\Driver\Settings
- */
-class OpenExchangeRates implements Interfaces\Component\Settings
+class OpenExchangeRates extends Base implements Driver
 {
-    const KEY_APP_ID = 'sAppId';
+    /**
+     * The base url of the Open Exchange Rates service
+     *
+     * @var string
+     */
+    const BASE_URL = 'https://openexchangerates.org/api';
 
     // --------------------------------------------------------------------------
 
     /**
-     * @inheritDoc
+     * The App ID to use.
+     *
+     * @var string
      */
-    public function getLabel(): string
-    {
-        return 'Open Exchange Rates';
-    }
+    protected $sAppId;
 
     // --------------------------------------------------------------------------
 
     /**
-     * @inheritDoc
+     * Returns the rate between two given currencies
+     *
+     * @param Currency $oFrom The from currency
+     * @param Currency $oTo   The to currency
+     *
+     * @return float
      */
-    public function getPermissions(): array
+    public function getRate(Currency $oFrom, Currency $oTo): float
     {
-        return [];
-    }
+        if (empty($this->sAppId)) {
+            throw new DriverNotConfiguredException(
+                'The OpenExchangeRate App ID has not been configured'
+            );
+        }
 
-    // --------------------------------------------------------------------------
+        //  @todo (Pablo 24/08/2020) - Cache the request so subsequent queries for the same base are faster
 
-    /**
-     * @inheritDoc
-     */
-    public function get(): array
-    {
-        /** @var Setting $oAppId */
-        $oAppId = Factory::factory('ComponentSetting');
-        $oAppId
-            ->setKey(static::KEY_APP_ID)
-            ->setLabel('App ID')
-            ->setInfo('A paid account is required for currency conversions to work correctly')
-            ->setValidation([
-                FormValidation::RULE_REQUIRED,
-            ]);
+        /** @var HttpRequest\Get $oGet */
+        $oGet      = Factory::factory('HttpRequestGet');
+        $oResponse = $oGet
+            ->baseUri(static::BASE_URL)
+            ->path('latest.json')
+            ->query([
+                'app_id' => $this->sAppId,
+                'base'   => $oFrom->code,
+            ])
+            ->execute();
 
-        return [
-            $oAppId,
-        ];
+        if ($oResponse->getStatusCode() !== HttpCodes::STATUS_OK) {
+            throw new DriverApiException(
+                sprintf(
+                    'Received a non-200 response from OER API: %s %s',
+                    $oResponse->getStatusCode(),
+                    $oResponse->getReasonPhrase()
+                )
+            );
+        }
+
+        $oBody = $oResponse->getBody();
+
+        if (!property_exists($oBody->rates, $oTo->code)) {
+            throw new DriverApiException(
+                sprintf(
+                    'Currency "%s" was not found in returned exchange rates for currency %s',
+                    $oTo->code,
+                    $oFrom->code
+                )
+            );
+        }
+
+        return (float) $oBody->rates->{$oTo->code};
     }
 }
